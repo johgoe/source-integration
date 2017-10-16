@@ -27,6 +27,14 @@ final class SourceIntegrationPlugin extends MantisSourceBase {
 	function display_changeset_link( $p_event, $p_bug_id ) {
 		$this->changesets = SourceChangeset::load_by_bug( $p_bug_id, true );
 
+
+		$t_project_id = bug_get_field( $p_bug_id, 'project_id' );
+		$t_view_threshold = config_get( 'plugin_Source_view_threshold' );
+		if ( !access_has_project_level( $t_view_threshold, $t_project_id ) ) {
+			return array();
+		}
+
+
 		if ( count( $this->changesets ) > 0 ) {
 			return array( plugin_lang_get( 'related_changesets', 'Source' ) => '#changesets' );
 		}
